@@ -1,14 +1,6 @@
-const jsdom = require('jsdom');
-const {JSDOM} = jsdom;
-const {document} = (new JSDOM('<!doctype html><html><body></body></html>')).window;
-global.document = document;
-const window = document.defaultView;
-const $ = require('jquery')(window);
 const crypto = require('crypto');
 var args = process.argv.splice(2);
-// var urlencode = require('urlencode');
-(function($) {
-	$.base64 = (function($) {
+var base64 = (function (){
     var _PADCHAR = "="
       , _ALPHA = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA"
       , _VERSION = "1.0";
@@ -95,21 +87,14 @@ var args = process.argv.splice(2);
         setAlpha: _setAlpha,
         VERSION: _VERSION
     }
-}($));
+})();
 var enc = "s" + "run" + "_bx1", n = 200, type = 1;
 var token=args[0],
 username=args[1],
 password=args[2],
 ip=args[3],
 ac_id="1";
-// console.log(json({
-//     username: username,
-//     password: password,
-//     ip: ip,
-//     acid: ac_id,
-//     enc_ver: enc
-// }));
-i = info({
+var i = info({
     username: username,
     password: password,
     ip: ip,
@@ -145,11 +130,8 @@ params.username=encodeURIComponent(params.username);
 params.password=encodeURIComponent(params.password);
 params.chksum=encodeURIComponent(params.chksum);
 console.log(JSON.stringify(params));
-// var djhlogin = function(response)
-// {console.log(response);}
-// $.get("http://aaa.uestc.edu.cn" + "/cgi-bin/srun_portal", params, function(data){
-// console.log("Data: " + data)})
-// console.log(JSON.stringify(params))
+
+
     function xEncode(str, key) {
         if (str == "") {
             return "";
@@ -215,32 +197,19 @@ console.log(JSON.stringify(params));
             return a.join('');
         }
     }
-    /*
-    function getChallenge(url, data, callback) {
-        return $.get(url + "/cgi-bin/get_challenge", data, callback, "jsonp");
-    }
-	*/
+
     function json(d) {
         return JSON.stringify(d);
     }
 
     function info(d, k) {
-    	// var buff = xEncode(json(d), k);
-        // return "{SRBX1}" +  buff.toString('base64');
-        return "{SRBX1}" + $.base64.encode(xEncode(json(d), k));
+        return "{SRBX1}" + base64.encode(xEncode(json(d), k));
     }
 
     function pwd(d, k) {
         return md5(d, k);
     }
 
-	/**
-	 * Returns an MD5 hash for the given `content`.
-	 *
-	 * @param {String} content
-	 *
-	 * @returns {String}
-	 */
 	function md5(content,token) {  
 	  return crypto.createHmac('md5',token).update(content).digest('hex')
 	}
@@ -250,38 +219,3 @@ console.log(JSON.stringify(params));
     function sha1(content) {  
 	  return crypto.createHash('sha1').update(content).digest('hex')
 	}
-
-    /*
-     * SRUN Portal Auth CGI
-     */
-     /*
-    function srunPortal(url, data, callback) {
-        return $.get(url + "/cgi-bin/srun_portal", data, callback, "jsonp");
-    }
-    function formatError(error) {
-    var str = "";
-    str = error.replace(/(_|, | |^)\S/g, function (s) {
-        s = s.replace(/(_|, | )/, "");
-        return s.toUpperCase();
-    });
-    return str.replace(/\./g, "");
-}
-*/
-/*
- * GET Error
- */
- /*
-function error(code, error, msg) {
-    if (typeof(code) == "number" || code == "") {
-        if (typeof msg != "undefined" && msg != "") {
-            return formatError(msg); //Format Error
-        }
-        return formatError(error); //Format Error
-    }
-    if (code == "E2901") {
-        return msg;
-    }
-    return code;
-}
-*/
-})($);
